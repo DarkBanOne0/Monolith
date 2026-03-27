@@ -1,6 +1,4 @@
-using Content.Shared._Exodus.Bosses;
 using Content.Client._Exodus.Bosses.Components;
-using Content.Client._Exodus.Bosses;
 using Robust.Client.Graphics;
 
 namespace Content.Client._Exodus.Bosses;
@@ -17,7 +15,7 @@ public sealed partial class BossIntroScreenSystem : EntitySystem
 
     private void OnStartup(EntityUid uid, BossIntroActiveComponent comp, ComponentStartup args)
     {
-        comp.IntroScreen = new BaseIntroScreen();
+        comp.IntroScreen = new TestIntroScreen();
         comp.IntroScreen.Active = true;
         _overlay.AddOverlay(new BossIntroOverlay());
     }

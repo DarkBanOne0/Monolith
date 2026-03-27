@@ -1,5 +1,3 @@
-using Content.Shared._Exodus.Bosses;
-
 namespace Content.Client._Exodus.Bosses.Components;
 
 [RegisterComponent]

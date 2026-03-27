@@ -1,5 +1,4 @@
 using Content.Client._Exodus.Bosses.Components;
-using Content.Shared._Exodus.Bosses;
 using Robust.Client.Player;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
@@ -25,7 +24,7 @@ public sealed class BossIntroOverlay : Overlay
     {
         IoCManager.InjectDependencies(this);
 
-        _font = new VectorFont(_cache.GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf"), 24);
+        _font = new VectorFont(_cache.GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf"), 120);
     }
 
     protected override void Draw(in OverlayDrawArgs args)
@@ -40,17 +39,30 @@ public sealed class BossIntroOverlay : Overlay
 
         var introScreen = introComp.IntroScreen;
 
-        introScreen.BaseDrawPosition = new Vector2(vp.Width * 0.5f, vp.Height * 0.35f);
+        introScreen.BaseDrawPosition = new Vector2(vp.Width * 0.5f, vp.Height * 0.15f);
+
+        float opacity = (introScreen.AnimationCompletion - introScreen.TextDelay) / (introScreen.TextDelay + 0.05f - introScreen.TextDelay)
+            * (introScreen.AnimationCompletion - 1f) / (0.77f - 1f);
+        opacity = MathHelper.Clamp(opacity, 0f, 1f);
 
         int letterCounter = 0;
         Vector2 offset = -Vector2.UnitX * CalculateOffsetOfString(introScreen.Text, introScreen, handle) * 0.5f;
+
         for (int i = 0; i < introScreen.Text.Length; i++)
         {
             string character = introScreen.Text[i].ToString();
 
+            float letterCompletionRatio = i / (float)(introScreen.Text.Length -1f);
+
             Vector2 drawPosition = introScreen.BaseDrawPosition + offset;
 
-            handle.DrawString(_font, drawPosition, character, introScreen.TextScale, introScreen.TextColor);
+            Color textColor = introScreen.TextColor.Calculate(letterCompletionRatio);
+            textColor.R *= opacity;
+            textColor.G *= opacity;
+            textColor.B *= opacity;
+            textColor.A *= opacity;
+
+            handle.DrawString(_font, drawPosition, character, introScreen.TextScale, textColor);
 
             offset += CalculateOffsetOfString(character, introScreen, handle);
 
