@@ -17,6 +17,7 @@ public sealed partial class BossIntroScreenSystem : EntitySystem
 
     private void OnStartup(EntityUid uid, BossIntroActiveComponent comp, ComponentStartup args)
     {
+        comp.IntroScreen = new BaseIntroScreen();
         comp.IntroScreen.Active = true;
         _overlay.AddOverlay(new BossIntroOverlay());
     }

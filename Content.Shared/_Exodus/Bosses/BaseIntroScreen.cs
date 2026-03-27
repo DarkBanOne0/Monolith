@@ -6,7 +6,7 @@ using System.Numerics;
 namespace Content.Shared._Exodus.Bosses;
 
 [Serializable, NetSerializable]
-public abstract class BaseIntroScreen
+public class BaseIntroScreen
 {
     public string Text = "Тест";
     public float AnimationDuration = 6.0f;
