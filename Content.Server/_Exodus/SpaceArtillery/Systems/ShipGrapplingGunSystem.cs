@@ -38,6 +38,7 @@ public sealed class ShipGrapplingGunSystem : SharedShipGrapplingGunSystem
 
         SubscribeLocalEvent<ShipGrapplingGunTargetComponent, EntityTerminatingEvent>(OnTargetTerminating);
         SubscribeLocalEvent<ShipGrapplingProjectileComponent, EntityTerminatingEvent>(OnProjectileTerminating);
+        SubscribeLocalEvent<ShipGrapplingGunComponent, EntityTerminatingEvent>(OnGunTerminating);
 
         _grapQuerry = GetEntityQuery<ShipGrapplingGunComponent>();
     }
@@ -136,6 +137,11 @@ public sealed class ShipGrapplingGunSystem : SharedShipGrapplingGunSystem
             return;
 
         Ungrapple((component.Gun, grapComp), true);
+    }
+
+    private void OnGunTerminating(EntityUid uid, ShipGrapplingGunComponent component, ref EntityTerminatingEvent args)
+    {
+        Ungrapple((uid, component), true);
     }
 
     protected override void Ungrapple(Entity<ShipGrapplingGunComponent> gun, bool isBreak)
