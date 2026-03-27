@@ -1,0 +1,35 @@
+- type: vessel
+  id: Trilobit
+  parent: BaseVessel
+  name: TSF-SKR Trilobit
+  description: No description yet
+  price: 85200 # the plasma and plastitanium tax is real...
+  category: Medium
+  group: Shipyard
+  access: Mercenary
+  shuttlePath: /Maps/_Exodus/Shuttles/trilobit.yml
+  guidebookPage: Null
+  class:
+  - Pursuit
+  engine:
+  - Uranium
+
+- type: gameMap
+  id: Trilobit
+  mapName: 'TSF-SKR Trilobit'
+  mapPath: /Maps/_Exodus/Shuttles/trilobit.yml
+  minPlayers: 0
+  stations:
+    Archer:
+      stationProto: StandardFrontierVessel
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Trilobit MIL{1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+        - type: StationJobs
+          availableJobs:
+            Contractor: [ 0, 0 ]
+            Pilot: [ 0, 0 ]
+            Mercenary: [ 0, 0 ]
