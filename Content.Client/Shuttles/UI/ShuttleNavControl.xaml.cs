@@ -1057,10 +1057,11 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             return;
 
         var ourGridPos = _transform.GetMapCoordinates(ourGrid);
+        var query = EntManager.GetEntityQuery<ZoneComponent>();
 
         foreach (var grid in _grids)
         {
-            if (!EntManager.TryGetComponent<ZoneComponent>(grid.Owner, out var zoneComp))
+            if (!query.TryGetComponent(grid.Owner, out var zoneComp))
                 continue;
 
             var gridPos = _transform.GetMapCoordinates(grid.Owner);
