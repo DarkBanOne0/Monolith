@@ -1060,7 +1060,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
         foreach (var grid in _grids)
         {
-            if (!EntManager.TryGetComponent<SafeZoneComponent>(grid.Owner, out var safeZoneComp))
+            if (!EntManager.TryGetComponent<ZoneComponent>(grid.Owner, out var zoneComp))
                 continue;
 
             var gridPos = _transform.GetMapCoordinates(grid.Owner);
@@ -1070,14 +1070,14 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
             var gridPosInView = Vector2.Transform(gridPos.Position, worldToView);
 
-            handle.DrawCircle(gridPosInView, safeZoneComp.Radius * MinimapScale, Color.LightGreen, filled: false);
+            handle.DrawCircle(gridPosInView, zoneComp.Radius * MinimapScale, zoneComp.Color, filled: false);
 
-            if (ourGridPos.InRange(gridPos, safeZoneComp.Radius))
+            if (ourGridPos.InRange(gridPos, zoneComp.Radius) && zoneComp.ShouldShowText)
             {
                 var textMargin = 6f;
                 var pos = new Vector2(textMargin, textMargin);
 
-                handle.DrawString(Font, pos * UIScale, Loc.GetString(safeZoneComp.Text), UIScale * 2f, Color.LightGreen);
+                handle.DrawString(Font, pos * UIScale, Loc.GetString(zoneComp.Text), UIScale * 2f, zoneComp.Color);
             }
         }
     }
