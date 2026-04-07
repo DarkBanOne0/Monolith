@@ -40,6 +40,17 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     private readonly SharedTransformSystem _transform;
     private readonly RadarBlipsSystem _blips;
 
+    // Exodus - SafeZone - Start
+    private EntityQuery<TransformComponent> _xformQuery;
+    private EntityQuery<FixturesComponent> _fixturesQuery;
+    private EntityQuery<PhysicsComponent> _bodyQuery;
+    private EntityQuery<IFFComponent> _IFFQuery;
+    private EntityQuery<MapGridComponent> _gridQuery;
+    private EntityQuery<MetaDataComponent> _metaDataQuery;
+    private EntityQuery<CompanyComponent> _companyQuery;
+    private EntityQuery<ZoneComponent> _zoneQuery;
+    // Exodus - SafeZone - End
+
     /// <summary>
     /// Used to transform all of the radar objects. Typically is a shuttle console parented to a grid.
     /// </summary>
@@ -119,6 +130,17 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         _transform = EntManager.System<SharedTransformSystem>();
         _station = EntManager.System<StationSystem>(); // Frontier
         _blips = EntManager.System<RadarBlipsSystem>();
+
+        // Exodus - SafeZone - Start
+        _xformQuery = EntManager.GetEntityQuery<TransformComponent>();
+        _fixturesQuery = EntManager.GetEntityQuery<FixturesComponent>();
+        _bodyQuery = EntManager.GetEntityQuery<PhysicsComponent>();
+        _IFFQuery = EntManager.GetEntityQuery<IFFComponent>();
+        _gridQuery = EntManager.GetEntityQuery<MapGridComponent>();
+        _metaDataQuery = EntManager.GetEntityQuery<MetaDataComponent>();
+        _companyQuery = EntManager.GetEntityQuery<CompanyComponent>();
+        _zoneQuery = EntManager.GetEntityQuery<ZoneComponent>();
+        // Exodus - SafeZone - End
 
         OnMouseEntered += HandleMouseEntered;
         OnMouseExited += HandleMouseExited;
@@ -318,11 +340,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             return;
         }
 
-        var xformQuery = EntManager.GetEntityQuery<TransformComponent>();
-        var fixturesQuery = EntManager.GetEntityQuery<FixturesComponent>();
-        var bodyQuery = EntManager.GetEntityQuery<PhysicsComponent>();
-
-        if (!xformQuery.TryGetComponent(_coordinates.Value.EntityId, out var xform)
+        if (!_xformQuery.TryGetComponent(_coordinates.Value.EntityId, out var xform) // Exodus - SafeZone
             || xform.MapID == MapId.Nullspace)
         {
             return;
@@ -347,8 +365,8 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         // Draw our grid in detail
         var ourGridId = xform.GridUid;
 
-        if (EntManager.TryGetComponent<MapGridComponent>(ourGridId, out var ourGrid) &&
-            fixturesQuery.HasComponent(ourGridId.Value))
+        if (_gridQuery.TryGetComponent(ourGridId, out var ourGrid) && ourGridId != null &&
+            _fixturesQuery.HasComponent(ourGridId.Value)) // Exodus - SafeZone
         {
             var ourGridToWorld = _transform.GetWorldMatrix(ourGridId.Value);
             var ourGridToShuttle = Matrix3x2.Multiply(ourGridToWorld, worldToShuttle);
@@ -384,11 +402,11 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         foreach (var grid in _grids)
         {
             var gUid = grid.Owner;
-            if (gUid == ourGridId || !fixturesQuery.HasComponent(gUid))
+            if (gUid == ourGridId || !_fixturesQuery.HasComponent(gUid)) // Exodus - SafeZone
                 continue;
 
-            var gridBody = bodyQuery.GetComponent(gUid);
-            EntManager.TryGetComponent<IFFComponent>(gUid, out var iff);
+            var gridBody = _bodyQuery.GetComponent(gUid); // Exodus - SafeZone
+            _IFFQuery.TryGetComponent(gUid, out var iff); // Exodus - SafeZone
 
             if (!_shuttles.CanDraw(gUid, gridBody, iff))
                 continue;
@@ -536,7 +554,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
                     // Get company color if entity has CompanyComponent
                     var displayColor = labelColor;
-                    if (!hideLabel && EntManager.TryGetComponent(gUid, out Shared._Mono.Company.CompanyComponent? companyComp) &&
+                    if (!hideLabel && _companyQuery.TryGetComponent(gUid, out CompanyComponent? companyComp) && // Exodus - SafeZone
                         !string.IsNullOrEmpty(companyComp.CompanyName))
                     {
                         var prototypeManager = IoCManager.Resolve<IPrototypeManager>();
@@ -605,7 +623,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             var targetEntity = EntManager.GetEntity(TargetEntity);
 
             string targetName;
-            if (targetEntity != EntityUid.Invalid && EntManager.TryGetComponent<MetaDataComponent>(targetEntity, out var targetMeta))
+            if (targetEntity != EntityUid.Invalid && _metaDataQuery.TryGetComponent(targetEntity, out var targetMeta)) // Exodus - SafeZone
                 targetName = targetMeta.EntityName;
             else
                 targetName = Loc.GetString("shuttle-console-target-name");
@@ -681,7 +699,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         // If we've set the controlling console, and it's on a different grid
         // to the shuttle itself, then draw an additional marker to help the
         // player determine where they are relative to the shuttle.
-        if (_consoleEntity != null && xformQuery.TryGetComponent(_consoleEntity, out var consoleXform))
+        if (_consoleEntity != null && _xformQuery.TryGetComponent(_consoleEntity, out var consoleXform)) // Exodus - SafeZone
         {
             if (consoleXform.ParentUid != _coordinates.Value.EntityId)
             {
@@ -987,7 +1005,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         var shields = EntManager.AllEntityQueryEnumerator<ShipShieldVisualsComponent, FixturesComponent, TransformComponent>();
         while (shields.MoveNext(out var uid, out var visuals, out var fixtures, out var xform))
         {
-            if (!EntManager.TryGetComponent<TransformComponent>(xform.GridUid, out var parentXform))
+            if (!_xformQuery.TryGetComponent(xform.GridUid, out var parentXform)) // Exodus - SafeZone
                 continue;
 
             if (xform.MapID != consoleXform.MapID)
@@ -1035,8 +1053,8 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     {
         foreach ( var link in _grapLinks)
         {
-            if (!EntManager.TryGetComponent<TransformComponent>(EntManager.GetEntity(link.Gun), out var gunXform)
-                || !EntManager.TryGetComponent<TransformComponent>(EntManager.GetEntity(link.Target), out var targetXform))
+            if (!_xformQuery.TryGetComponent(EntManager.GetEntity(link.Gun), out var gunXform)
+                || !_xformQuery.TryGetComponent(EntManager.GetEntity(link.Target), out var targetXform))
                 continue;
 
             var gunPosInView = Vector2.Transform(_transform.GetWorldPosition(EntManager.GetEntity(link.Gun)), worldToView);
@@ -1057,11 +1075,10 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             return;
 
         var ourGridPos = _transform.GetMapCoordinates(ourGrid);
-        var query = EntManager.GetEntityQuery<ZoneComponent>();
 
         foreach (var grid in _grids)
         {
-            if (!query.TryGetComponent(grid.Owner, out var zoneComp))
+            if (!_zoneQuery.TryGetComponent(grid.Owner, out var zoneComp))
                 continue;
 
             var gridPos = _transform.GetMapCoordinates(grid.Owner);
