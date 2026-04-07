@@ -1053,16 +1053,17 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     // Exodus - SafeZone - Start
     private void DrawSafeZones(DrawingHandleScreen handle, Matrix3x2 worldToView, EntityUid? ourGridUid)
     {
+        if (ourGridUid is not { } ourGrid)
+            return;
+
+        var ourGridPos = _transform.GetMapCoordinates(ourGrid);
+
         foreach (var grid in _grids)
         {
             if (!EntManager.TryGetComponent<SafeZoneComponent>(grid.Owner, out var safeZoneComp))
                 continue;
 
-            if (ourGridUid is not { } ourGrid)
-                continue;
-
             var gridPos = _transform.GetMapCoordinates(grid.Owner);
-            var ourGridPos = _transform.GetMapCoordinates(ourGrid);
 
             if (gridPos.MapId != ourGridPos.MapId)
                 continue;
@@ -1076,7 +1077,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                 var textMargin = 6f;
                 var pos = new Vector2(textMargin, textMargin);
 
-                handle.DrawString(Font, pos * UIScale, safeZoneComp.Text, UIScale * 2f, Color.LightGreen);
+                handle.DrawString(Font, pos * UIScale, Loc.GetString(safeZoneComp.Text), UIScale * 2f, Color.LightGreen);
             }
         }
     }
