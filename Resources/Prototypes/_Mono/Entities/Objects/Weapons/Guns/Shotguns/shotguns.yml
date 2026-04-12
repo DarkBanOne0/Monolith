@@ -31,7 +31,7 @@
     soundInsert:
       path: /Audio/Weapons/Guns/MagIn/shotgun_insert.ogg
   - type: StaticPrice
-    price: 5000
+    price: 1199 # Exodus-gun-cost-tweak
     vendPrice: 42300
 
 - type: entity
@@ -69,7 +69,7 @@
     soundInsert:
       path: /Audio/Weapons/Guns/MagIn/shotgun_insert.ogg
   - type: StaticPrice
-    price: 5000
+    price: 1199 # Exodus-gun-cost-tweak
     vendPrice: 42300
   - type: LaserPointer
     targetedColor: "#FF0000"
@@ -108,7 +108,7 @@
     soundInsert:
       path: /Audio/Weapons/Guns/MagIn/shotgun_insert.ogg
   - type: StaticPrice
-    price: 5000
+    price: 1199 # Exodus-gun-cost-tweak
     vendPrice: 42300
 
 - type: entity

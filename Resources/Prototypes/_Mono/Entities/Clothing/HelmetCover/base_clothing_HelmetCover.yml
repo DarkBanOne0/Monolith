@@ -15,7 +15,7 @@
     tags:
     - Kevlar
   - type: StaticPrice
-    price: 1200
+    price: 20 # Exodus
     vendPrice: 1700
 
 #not that awful solution

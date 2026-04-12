@@ -140,7 +140,7 @@ public sealed partial class FireControlSystem : EntitySystem
             return;
 
         // Fire the actual weapons
-        FireWeapons((EntityUid)component.ConnectedServer, args.Selected, args.Coordinates, server);
+        FireWeapons((EntityUid)component.ConnectedServer, args.Selected, args.Coordinates, args.Actor, server); // Exodus-AdminQoL: Provide user triggered auto-shooting
         if ((component.NextLog == null || component.NextLog < _timing.CurTime) && args.Selected.Any())
         {
             var firePos = _transform.ToMapCoordinates(GetCoordinates(args.Coordinates)).Position;
@@ -258,7 +258,7 @@ public sealed partial class FireControlSystem : EntitySystem
         if (!Resolve(uid, ref component))
             return;
 
-        NavInterfaceState navState = _shuttleConsoleSystem.GetNavState(uid, _shuttleConsoleSystem.GetAllDocks());
+        NavInterfaceState navState = _shuttleConsoleSystem.GetNavState(uid, _shuttleConsoleSystem.GetAllDocks(), _shuttleConsoleSystem.GetAllGrapLinks()); // Exodus - ShuttleHooks
 
         List<FireControllableEntry> controllables = new();
         if (component.ConnectedServer != null && TryComp<FireControlServerComponent>(component.ConnectedServer, out var server))

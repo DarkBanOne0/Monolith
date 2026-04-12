@@ -139,6 +139,7 @@
     highPressureMultiplier: 0.7
     lowPressureMultiplier: 1000
   - type: Armor
+    priceMultiplier: 0.5 # Exodus | fix money dupe, buying in vend for less, selling for more
     modifiers:
       coefficients:
         Blunt: 0.7

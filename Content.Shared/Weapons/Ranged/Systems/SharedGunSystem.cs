@@ -344,6 +344,7 @@ public abstract partial class SharedGunSystem : EntitySystem
     {
         gun.ShootCoordinates = toCoordinates;
         var autoShoot = EnsureComp<AutoShootGunComponent>(gunUid);
+        autoShoot.User = user; // Exodus-AdminQoL: Provide user triggered auto-shooting
         if (autoShoot.RemainingTime < duration)
             autoShoot.RemainingTime = duration;
     }
@@ -445,7 +446,10 @@ public abstract partial class SharedGunSystem : EntitySystem
             return;
         }
 
-        var fromCoordinates = Transform(user).Coordinates;
+        var fromCoordinates = Containers.TryGetContainingContainer(gunUid, out _) // Exodus: WTF they're firing from user
+            ? Transform(user).Coordinates
+            : Transform(gunUid).Coordinates;
+
         // Remove ammo
         var ev = new TakeAmmoEvent(shots, new List<(EntityUid? Entity, IShootable Shootable)>(), fromCoordinates, user, true); // Frontier: add intent to fire
 

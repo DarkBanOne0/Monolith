@@ -495,4 +495,8 @@ public enum LogType
     /// Events relating to midi playback.
     /// </summary>
     Instrument = 103,
+    // Exodus-Begin
+    AutoUnstuck = 104,
+    Movement = 105,
+    // Exodus-End
 }

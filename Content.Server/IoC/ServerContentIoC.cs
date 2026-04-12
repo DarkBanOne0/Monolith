@@ -1,3 +1,4 @@
+using Content.Server._Exodus.Adminbus.WebAPI; // Exodus-WebAPI
 using Content.Server._NF.Auth;
 using Content.Server.Administration;
 using Content.Server.Administration.Logs;
@@ -22,6 +23,9 @@ using Content.Server.Players.RateLimiting;
 using Content.Server.Preferences.Managers;
 using Content.Server.ServerInfo;
 using Content.Server.ServerUpdates;
+using Content.Server.SS220.Discord;
+using Content.Server.SS220.JoinQueue;
+using Content.Server.SS220.TTS;
 using Content.Server.Voting.Managers;
 using Content.Server.Worldgen.Tools;
 using Content.Shared.Administration.Logs;
@@ -81,6 +85,11 @@ namespace Content.Server.IoC
 
             IoCManager.Register<DiscordLink>();
             IoCManager.Register<DiscordChatLink>();
+
+            IoCManager.Register<JoinQueueManager>(); // Corvax-Queue
+            IoCManager.Register<TTSManager>(); // Corvax-TTS
+            IoCManager.Register<DiscordPlayerManager>(); // SiS220 discord player manager
+            IoCManager.Register<WebAPI>(); // Exodus-WebAPI
         }
     }
 }

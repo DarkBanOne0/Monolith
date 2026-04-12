@@ -1,2 +1,2 @@
-ent-RadioHandheldNF = handicomms
-    .desc = A handy handheld radio with adjustible frequency.
+ent-RadioHandheldNF = портативная рация
+    .desc = Портативная рация с настраиваемой частотой.

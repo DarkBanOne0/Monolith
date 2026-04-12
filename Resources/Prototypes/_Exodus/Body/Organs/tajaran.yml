@@ -1,0 +1,18 @@
+- type: entity
+  id: OrganTajaranEyes
+  parent: BaseAnimalOrgan
+  name: tajaran eyes
+  description: "Looks like this cat has one less life."
+  components:
+  - type: Sprite
+    sprite: _Exodus/Mobs/Species/Tajaran/organs.rsi
+    layers:
+    - state: eyeball-l
+    - state: eyeball-r
+  - type: Organ
+    onAdd:
+    - type: NightVision
+      activateSound: null
+      deactivateSound: null
+    slotId: eyes
+  - type: Eyes

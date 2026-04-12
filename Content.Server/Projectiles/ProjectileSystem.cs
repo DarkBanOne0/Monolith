@@ -13,6 +13,8 @@ using Robust.Shared.Physics.Systems;
 using System.Linq;
 using System.Numerics;
 using Content.Server.Gatherable.Components;
+using Prometheus;
+using Content.Shared._Mono.SpaceArtillery;
 
 namespace Content.Server.Projectiles;
 
@@ -27,6 +29,17 @@ public sealed class ProjectileSystem : SharedProjectileSystem
     // <Mono>
     private EntityQuery<PhysicsComponent> _physQuery;
     private EntityQuery<FixturesComponent> _fixQuery;
+
+    // Exodus-Begin: Metrics
+    private EntityQuery<ShipWeaponProjectileComponent> _shipProjQuery;
+    private static readonly Gauge BulletsCountGauge = Metrics.CreateGauge(
+        "exds_bullets_count",
+        "Number of currently existing bullets.",
+        new GaugeConfiguration
+        {
+            LabelNames = ["type"]
+        });
+    // Exodus-End
 
     /// <summary>
     /// Minimum velocity for a projectile to be considered for raycast hit detection.
@@ -48,7 +61,27 @@ public sealed class ProjectileSystem : SharedProjectileSystem
 
         // Mono
         UpdatesBefore.Add(typeof(SharedPhysicsSystem));
+
+        // Exodus
+        _shipProjQuery = GetEntityQuery<ShipWeaponProjectileComponent>();
     }
+
+    // Exodus-Begin: Metrics
+    // TODO: instead of wasting precious CPU time for counting, it's should be placed in engine to print out statistics for every component type which will be easier for CPU without extra steps
+    protected override void IncMetricsCount(EntityUid uid)
+    {
+        base.IncMetricsCount(uid);
+        var type = _shipProjQuery.HasComp(uid) ? "ship" : "other";
+        BulletsCountGauge.WithLabels(type).Inc();
+    }
+
+    protected override void DecMetricsCount(EntityUid uid)
+    {
+        base.DecMetricsCount(uid);
+        var type = _shipProjQuery.HasComp(uid) ? "ship" : "other";
+        BulletsCountGauge.WithLabels(type).Dec();
+    }
+    // Exodus-End
 
     public override DamageSpecifier? ProjectileCollide(Entity<ProjectileComponent, PhysicsComponent> projectile, EntityUid target, MapCoordinates? collisionCoordinates, bool predicted = false)
     {

@@ -1,2 +1,2 @@
-ent-MedicalAppraisalTool = medical bounty scanner
-    .desc = Scans bodies for open medical bounties.
+ent-MedicalAppraisalTool = медицинский оценочный инструмент
+    .desc = Проверяет тела на наличие медицинской награды.

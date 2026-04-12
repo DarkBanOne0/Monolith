@@ -1,12 +1,12 @@
 ent-WelderEmpty = { ent-Welder }
-    .suffix = Empty
+    .suffix = Пустой
     .desc = { ent-Welder.desc }
 ent-WelderIndustrialEmpty = { ent-WelderIndustrial }
-    .suffix = Empty
+    .suffix = Пустой
     .desc = { ent-WelderIndustrial.desc }
 ent-WelderIndustrialAdvancedEmpty = { ent-WelderIndustrialAdvanced }
-    .suffix = Empty
+    .suffix = Пустой
     .desc = { ent-WelderIndustrialAdvanced.desc }
 ent-WelderExperimentalEmpty = { ent-WelderExperimental }
-    .suffix = Empty
+    .suffix = Пустой
     .desc = { ent-WelderExperimental.desc }

@@ -18,6 +18,11 @@ public sealed partial class StationEventComponent : Component
     public const float WeightHigh = 15.0f;
     public const float WeightVeryHigh = 20.0f;
 
+    // SS220-more-robust-TTS-announcements-begin
+    [DataField]
+    public bool PlayTTS = true;
+    // SS220-more-robust-TTS-announcements-end
+
     [DataField]
     public float Weight = WeightNormal;
 
@@ -68,6 +73,12 @@ public sealed partial class StationEventComponent : Component
 
     [DataField]
     public ProtoId<RadioChannelPrototype> EndRadioAnnouncementChannel = "Supply"; // Frontier
+
+    /// <summary>
+    ///     Mono - sender of start/warn/end announcements.
+    /// </summary>
+    [DataField]
+    public LocId? AnnounceSender = null;
 
     /// <summary>
     ///     In minutes, when is the first round time this event can start

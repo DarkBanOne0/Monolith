@@ -230,13 +230,12 @@
     - Administratorx # Hopefully this doesnt get denied because it has adminstrator in it smh
     - MSMarvin
 
-# ====Rogue / Antag. Companies====
 - type: company
   id: TheViperGroup
   form: Antagonist
-  name: viper-group-name #Ru-Localization
+  name: viper-group-name # Ru-Localization
   description: viper-group-description
-  color: "#D82918"
+  color: "#B82121"
   image: /Textures/_Mono/Companies/thevipergroup.png # Example
   disabled: true
   logins:
@@ -251,12 +250,19 @@
   - Ghost581
   - hellcat76
   - HungryCuban
-  - Kiterny
-  - plazmasniper_2005
-  - Redrover1760
   - Scyron
   - SwadianSupremacy
   - Traildog
+  - PH77SER
+  - Siege_Of_Malta_Never_Happened
+  - gelliii
+  - Uranio
+  - Jinryuu
+  - FervantTwo8
+  - Exsa
+  - DesriTheRacoon
+  - AngusBeef
+  - ShirouAjisai
 
 - type: company
   id: RedSailCorsairs
@@ -266,7 +272,7 @@
   color: "#930000"
   image: /Textures/_Mono/Companies/redsailcorsairs.png
   disabled: true
-  logins: # 18 total
+  logins: # Waiting for others to give me theyr SS14 names, 17 total 
   - Corrupt
   - Jasos
   - Luksu
@@ -274,14 +280,17 @@
   - Wawa_pull
   - Pffy
   - SouthernSaint
-  - Birdadoido
   - Abbyssl
   - MSMarvin
   - Dusky
-  - Middleagedman
-  - EmmaFaith
   - soulvapor
+  - EmmaFaith
   - Ether
-  - Fuckaroo
+  - MapleSilk
   - Spacepeing
   - zigcraft 
+  - burrrkeye
+  - enkidienne
+  - chugaa
+  - SLDuggy
+  - Middleagedman

@@ -1,2 +1,2 @@
-ent-BoxDispenserFlare = emergency flare dispenser
-    .desc = Dispenses emergency flares.
+ent-BoxDispenserFlare = раздатчик аварийных фальшфейеров 
+    .desc = Раздаёт аварийные фальшфейеры.

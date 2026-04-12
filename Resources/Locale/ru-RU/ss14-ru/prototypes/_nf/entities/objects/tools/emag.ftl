@@ -1,6 +1,6 @@
-ent-DemagUnlimited = cryptographic resequencer
-    .desc = The all-in-one unhacking solution. The last bastion of order. The iconic DEMAG.
-    .suffix = Unlimited
+ent-DemagUnlimited = криптографический ресеквенсор
+    .desc = Универсальное решение для устранения последствий взлома. Последний оплот порядка. Знаковый DEMAG.
+    .suffix = Неограниченный
 ent-Demag = { ent-DemagUnlimited }
-    .suffix = Limited
+    .suffix = Ограниченный
     .desc = { ent-DemagUnlimited.desc }

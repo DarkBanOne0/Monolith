@@ -20,6 +20,8 @@
   addComponents:
   - type: IFF
     color: "#ccaa55"
+  - type: Tower7G # Exodus-Adminbus
+    range: 128
 
 - type: gameMap
   id: USSPCamelot
@@ -38,7 +40,9 @@
         - type: StationNameSetup
           mapNameTemplate: 'Форт Камелот' # Ru-Localization
         - type: ExtraStationInformation
-          iconPath: /Textures/_NF/Structures/Storage/Crates/secure_ammo.rsi/icon.png
+          icon:
+            sprite: _NF/Structures/Storage/Crates/secure_ammo.rsi
+            state: icon
           stationSubtext: 'frontier-lobby-camelot-subtext'
           stationDescription: 'frontier-lobby-camelot-description'
           lobbySortOrder: 4

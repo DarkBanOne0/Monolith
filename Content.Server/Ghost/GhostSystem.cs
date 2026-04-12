@@ -19,6 +19,7 @@ using Content.Shared.Eye;
 using Content.Shared.FixedPoint;
 using Content.Shared.Follower;
 using Content.Shared.Ghost;
+using Content.Shared.GhostTypes;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
@@ -71,6 +72,7 @@ namespace Content.Server.Ghost
         [Dependency] private readonly TagSystem _tag = default!;
         [Dependency] private readonly IAdminManager _admin = default!; // Frontier
         [Dependency] private readonly IServerPreferencesManager _preferencesManager = default!;
+        [Dependency] private readonly GhostSpriteStateSystem _ghostState = default!;
 
         private EntityQuery<GhostComponent> _ghostQuery;
         private EntityQuery<PhysicsComponent> _physicsQuery;
@@ -125,20 +127,25 @@ namespace Content.Server.Ghost
         {
             args.Handled = true;
 
-            if (HasComp<GhostHearingComponent>(uid))
+            //ss220 add filter tts for ghost start
+            if (!TryComp<GhostHearingComponent>(uid, out var ghostHearingComponent))
+                return;
+
+            if (ghostHearingComponent.IsEnabled)
             {
-                RemComp<GhostHearingComponent>(uid);
                 _actions.SetToggled(component.ToggleGhostHearingActionEntity, true);
+                ghostHearingComponent.IsEnabled = false;
             }
             else
             {
-                AddComp<GhostHearingComponent>(uid);
                 _actions.SetToggled(component.ToggleGhostHearingActionEntity, false);
+                ghostHearingComponent.IsEnabled = true;
             }
 
-            var str = HasComp<GhostHearingComponent>(uid)
+            var str = ghostHearingComponent.IsEnabled
                 ? Loc.GetString("ghost-gui-toggle-hearing-popup-on")
                 : Loc.GetString("ghost-gui-toggle-hearing-popup-off");
+            //ss220 add filter tts for ghost end
 
             Popup.PopupEntity(str, uid, uid);
             Dirty(uid, component);
@@ -209,6 +216,10 @@ namespace Content.Server.Ghost
             var time = _gameTiming.CurTime;
             component.TimeOfDeath = time;
             Dirty(uid, component); // Frontier
+
+            //ss220 add filter tts for ghost start
+            EnsureComp<GhostHearingComponent>(uid);
+            //ss220 add filter tts for ghost end
         }
 
         private void OnGhostShutdown(EntityUid uid, GhostComponent component, ComponentShutdown args)
@@ -228,6 +239,10 @@ namespace Content.Server.Ghost
             // Entity can't see ghosts anymore.
             _eye.RefreshVisibilityMask(uid);
             _actions.RemoveAction(uid, component.BooActionEntity);
+
+            //ss220 add filter tts for ghost start
+            RemComp<GhostHearingComponent>(uid);
+            //ss220 add filter tts for ghost end
         }
 
         private void OnMapInit(EntityUid uid, GhostComponent component, MapInitEvent args)
@@ -237,6 +252,9 @@ namespace Content.Server.Ghost
             _actions.AddAction(uid, ref component.ToggleLightingActionEntity, component.ToggleLightingAction);
             _actions.AddAction(uid, ref component.ToggleFoVActionEntity, component.ToggleFoVAction);
             _actions.AddAction(uid, ref component.ToggleGhostsActionEntity, component.ToggleGhostsAction);
+            //ss220 add filter tts
+            _actions.AddAction(uid, ref component.ToggleRadioChannelsUIEntity, component.ToggleRadioChannelsUI);
+            //ss220 add filter tts
         }
 
         private void OnGhostExamine(EntityUid uid, GhostComponent component, ExaminedEvent args)
@@ -557,6 +575,11 @@ namespace Content.Server.Ghost
 
             var ghost = SpawnAtPosition(GameTicker.ObserverPrototypeName, spawnPosition.Value);
             var ghostComponent = Comp<GhostComponent>(ghost);
+
+            if (TryComp<GhostSpriteStateComponent>(ghost, out var state))  // If more TryComps are added this should be turned into an event
+            {
+                _ghostState.SetGhostSprite((ghost, state), mind);
+            }
 
             // Try setting the ghost entity name to either the character name or the player name.
             // If all else fails, it'll default to the default entity prototype name, "observer".

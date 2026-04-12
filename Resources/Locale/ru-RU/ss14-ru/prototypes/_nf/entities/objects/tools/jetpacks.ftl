@@ -1,6 +1,6 @@
-ent-JetpackNfsd = TSFMC jetpack
-    .suffix = Empty
+ent-JetpackNfsd = джетпак КПВ ТСФ
+    .suffix = Пустой
     .desc = { ent-JetpackSecurity.desc }
-ent-JetpackNfsdFilled = TSFMC jetpack
-    .suffix = Filled
+ent-JetpackNfsdFilled = джетпак КПВ ТСФ
+    .suffix = Заполненный
     .desc = { ent-JetpackSecurityFilled.desc }

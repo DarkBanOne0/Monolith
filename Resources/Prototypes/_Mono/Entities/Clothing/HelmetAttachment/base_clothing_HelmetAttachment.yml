@@ -12,7 +12,7 @@
   - type: Sprite
     state: icon
   - type: StaticPrice
-    price: 200
+    price: 20 # Exodus
     vendPrice: 1000
 
 #not that awful solution

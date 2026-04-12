@@ -120,7 +120,17 @@ public sealed partial class SalvageSystem
         var directionLocalization = ContentLocalizationManager.FormatDirection(component.DungeonLocation.GetDir()).ToLower();
 
         if (component.DungeonLocation != Vector2.Zero)
+        {
             Announce(args.MapUid, Loc.GetString("salvage-expedition-announcement-dungeon", ("direction", directionLocalization)));
+
+            // Exodus fix announce expeditions start
+            var mission = GetMission(component.MissionParams.MissionType,
+                component.MissionParams.Difficulty,
+                component.MissionParams.Seed);
+
+            Announce(args.MapUid, GetMissionDescription(mission));
+            // Exodus fix announce expeditions end
+        }
 
         component.Stage = ExpeditionStage.Running;
         Dirty(args.MapUid, component);
@@ -283,6 +293,11 @@ public sealed partial class SalvageSystem
             if (comp.Completed)
                 continue;
 
+            // Exodus fix announce expeditions start
+            if (comp.Stage is ExpeditionStage.Added)
+                continue;
+            // Exodus fix announce expeditions end
+
             var structureAnnounce = false;
 
             for (var i = 0; i < structure.Structures.Count; i++)
@@ -314,6 +329,11 @@ public sealed partial class SalvageSystem
         {
             if (comp.Completed)
                 continue;
+
+            // Exodus fix announce expeditions start
+            if (comp.Stage is ExpeditionStage.Added)
+                continue;
+            // Exodus fix announce expeditions end
 
             var announce = false;
 

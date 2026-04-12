@@ -83,6 +83,9 @@ public abstract partial class SharedProjectileSystem : EntitySystem
 
         // Mono
         SubscribeLocalEvent<ProjectileComponent, TileFrictionEvent>(OnTileFriction);
+
+        // Exodus
+        SubscribeLocalEvent<ProjectileComponent, ComponentShutdown>(OnProjectileShutdown);
     }
 
     /// <summary>
@@ -104,7 +107,25 @@ public abstract partial class SharedProjectileSystem : EntitySystem
             return;
 
         EnsureComp<MetaDataComponent>(uid);
+        IncMetricsCount(uid); // Exodus
     }
+
+    // Exodus-Begin: Update metrics counter for every projectile creation and deletion
+    private void OnProjectileShutdown(EntityUid uid, ProjectileComponent component, ComponentShutdown args)
+    {
+        DecMetricsCount(uid);
+    }
+
+    protected virtual void IncMetricsCount(EntityUid uid)
+    {
+        // side-specific implementation
+    }
+
+    protected virtual void DecMetricsCount(EntityUid uid)
+    {
+        // side-specific implementation
+    }
+    // Exodus-End
 
     private void OnStartCollide(EntityUid uid, ProjectileComponent component, ref StartCollideEvent args)
     {
@@ -197,12 +218,13 @@ public abstract partial class SharedProjectileSystem : EntitySystem
             var shooterOrWeapon = EntityManager.EntityExists(component.Shooter) ? component.Shooter!.Value : component.Weapon!.Value;
 
             var projectileName = ToPrettyString(uid);
+            var weaponName = ToPrettyString(component.Weapon!.Value); // Exodus-AdminQoL
             var shooterName = ToPrettyString(shooterOrWeapon);
             var targetName = ToPrettyString(target);
             var damageAmount = modifiedDamage.GetTotal();
             _adminLogger.Add(LogType.BulletHit,
                 HasComp<ActorComponent>(target) ? LogImpact.Extreme : LogImpact.High,
-                $"Projectile {projectileName:projectile} shot by {shooterName:source} hit {targetName:target} and dealt {damageAmount:damage} damage");
+                $"Projectile {projectileName:projectile} shot by {shooterName:source} via {weaponName:weapon} hit {targetName:target} and dealt {damageAmount:damage} damage"); // Exodus-AdminQoL
         }
 
         if (!deleted)
@@ -481,6 +503,9 @@ public abstract partial class SharedProjectileSystem : EntitySystem
 
     public void DetachAllEmbedded(Entity<EmbeddedContainerComponent> container)
     {
+        if (_net.IsClient) //Exodus: space hooks
+            return;
+
         foreach (var embedded in container.Comp.EmbeddedObjects)
         {
             if (!TryComp<EmbeddableProjectileComponent>(embedded, out var embeddedComp))
