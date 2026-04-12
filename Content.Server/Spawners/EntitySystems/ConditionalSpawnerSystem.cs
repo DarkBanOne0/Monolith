@@ -127,7 +127,7 @@ namespace Content.Server.Spawners.EntitySystems
             if (TerminatingOrDeleted(ent) || !Exists(ent))
                 return;
 
-            var coords = _transform.GetMapCoordinates(ent);
+            var coords = _transform.GetMapCoordinates(ent); // Exodus
 
             var spawns = _entityTable.GetSpawns(ent.Comp.Table);
             foreach (var proto in spawns)
