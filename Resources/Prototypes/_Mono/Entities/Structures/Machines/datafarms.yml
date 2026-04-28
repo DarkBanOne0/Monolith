@@ -98,6 +98,18 @@
   - type: ResearchPointSource
     pointsPerSecond: 10
     active: true
+  - type: AtmosDevice
+  - type: NodeContainer
+    nodes:
+      inlet:
+        !type:PipeNode
+        nodeGroupID: Pipe
+        pipeDirection: West
+  - type: DataFarm
+    inletName: inlet
+    outletName: outlet
+    cycleDuration: 1.0
+    intakePerTick: 1.0
 
 - type: entity
   id: DatafarmResearchFaction
