@@ -22,6 +22,7 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.PowerCell;
 using Content.Shared.Timing;
 using Content.Shared.Toggleable;
+using Content.Shared.Inventory; // Exodus
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 
@@ -46,6 +47,7 @@ public sealed class DefibrillatorSystem : EntitySystem
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedMindSystem _mind = default!;
     [Dependency] private readonly UseDelaySystem _useDelay = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!; // Exodus
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -116,6 +118,15 @@ public sealed class DefibrillatorSystem : EntitySystem
 
         if (!targetCanBeAlive && !component.CanDefibCrit && _mobState.IsCritical(target, mobState))
             return false;
+
+        // Exodus - Start
+        if (_inventory.TryGetSlotEntity(target, "outerClothing", out var item) && item != null)
+        {
+            if (user != null)
+                _popup.PopupEntity(Loc.GetString("defibrillator-has-outerclothing"), target, user.Value);
+            return false;
+        }
+        // Exodus - End
 
         return true;
     }
