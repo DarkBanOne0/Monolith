@@ -81,21 +81,47 @@ public sealed class DataFarmSystem : EntitySystem
         var powered = _power.IsPowered(uid);
         var takeNow = comp.IntakePerSecond * args.dt;
 
-        if (!powered
-            || env == null
-            || env.TotalMoles < comp.MinMolesOnTile
-            || env.Pressure < comp.MinPressure
-            ||inlet.Air.TotalMoles < takeNow)
+        if (!powered)
         {
+            comp.StartupAccumulator = TimeSpan.Zero;
+            comp.StartupInProgress = false;
+
             SetEnabled((uid, comp), false);
             SetState((uid, comp), DataFarmState.Off);
+
             return;
         }
 
-        if (env.Temperature < comp.MinTemp)
+        if (comp.StartupInProgress)
+        {
+            comp.StartupAccumulator += TimeSpan.FromSeconds(args.dt);
+
+            if (comp.StartupAccumulator < comp.ProcessDuration)
+            {
+                SetEnabled((uid, comp), false);
+                SetState((uid, comp), DataFarmState.Proces);
+                return;
+            }
+
+            comp.StartupInProgress = false;
+            comp.StartupAccumulator = TimeSpan.Zero;
+        }
+
+        if (!comp.Enabled && comp.CurrentState == DataFarmState.Off)
+        {
+            comp.StartupInProgress = true;
+            SetState((uid, comp), DataFarmState.Proces);
+            return;
+        }
+
+        if (env == null
+            || env.Temperature < comp.MinTemp
+            || env.TotalMoles < comp.MinMolesOnTile
+            || env.Pressure < comp.MinPressure
+            || inlet.Air.TotalMoles < takeNow)
         {
             SetEnabled((uid, comp), false);
-            SetState(uid, comp, DataFarmState.Hypothermia);
+            SetState((uid, comp), DataFarmState.NotGood);
             return;
         }
 
@@ -111,12 +137,12 @@ public sealed class DataFarmSystem : EntitySystem
 
         if (env.Temperature > comp.MaxTemp)
         {
-            SetState(uid, comp, DataFarmState.Overheat);
-            ApplyHeatDamage((uid, comp));
+            SetState((uid, comp), DataFarmState.Destract);
+            ApplyDamage((uid, comp));
         }
         else
         {
-            SetState(uid, comp, DataFarmState.On);
+            SetState((uid, comp), DataFarmState.Normal);
         }
 
         var c = _atmos.GetHeatCapacity(comp.Buffer, applyScaling: true);
@@ -156,7 +182,7 @@ public sealed class DataFarmSystem : EntitySystem
 
         ent.Comp.CurrentState = state;
 
-        if (TryComp<AppearanceComponent>(uid, out var appearance))
-            _appearance.SetData(uid, DataFarmVisuals.State, state, appearance);
+        if (TryComp<AppearanceComponent>(ent.Owner, out var appearance))
+            _appearance.SetData(ent.Owner, DataFarmVisuals.State, state, appearance);
     }
 }

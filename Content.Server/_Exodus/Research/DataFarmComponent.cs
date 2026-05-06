@@ -47,4 +47,13 @@ public sealed partial class DataFarmComponent : Component
 
     [DataField]
     public float DamagePerSecond;
+
+    [DataField]
+    public bool StartupInProgress;
+
+    [DataField]
+    public TimeSpan StartupAccumulator = TimeSpan.Zero;
+
+    [DataField]
+    public TimeSpan ProcessDuration = TimeSpan.FromSeconds(0.9);
 }

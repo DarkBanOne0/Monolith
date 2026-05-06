@@ -8,11 +8,20 @@ public enum DataFarmVisuals : byte
 {
     State
 }
+
+[Serializable, NetSerializable]
+public enum DataFarmVisualLayers : byte
+{
+    State,
+    Light
+}
+
 [Serializable, NetSerializable]
 public enum DataFarmState : byte
 {
     Off,
-    Hypothermia,
-    On,
-    Overheat
+    Proces,
+    Normal,
+    NotGood,
+    Destract
 }

@@ -70,16 +70,31 @@
   abstract: true
   components:
   - type: Sprite
-    sprite: _Mono/Structures/Machines/neapolitan_server.rsi
+    sprite: _Exodus/Structures/Machines/datafarm_research.rsi
     layers:
     - state: icon
-    - state: unlit
+    - state: pipe
+    - map: ["enum.DataFarmVisualLayers.State"]
+      state: DatafarmResearch-off
+    - map: ["enum.DataFarmVisualLayers.Light"]
+      state: null
       shader: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-    - state: stripe
-      color: "#b3aa79"
-    - state: stripe2
-      color: "#5b0093"
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.DataFarmVisuals.State:
+        enum.DataFarmVisualLayers.State:
+          Off: { state: DatafarmResearch-off }
+          Proces: { state: DatafarmResearch-on-proces }
+          Normal: { state: DatafarmResearch-on-normal }
+          NotGood: { state: DatafarmResearch-on-notgood }
+          Destract: { state: DatafarmResearch-on-destract }
+        enum.DataFarmVisualLayers.Light:
+#          Off: { state: DatafarmResearch-off-light }
+          Proces: { state: DatafarmResearch-on-proces-light }
+          Normal: { state: DatafarmResearch-on-normal-light }
+          NotGood: { state: DatafarmResearch-on-notgood-light }
+          Destract: { state: DatafarmResearch-on-destract-light }
   - type: ResearchClient
   - type: ActivatableUI
     key: enum.ResearchClientUiKey.Key
@@ -104,7 +119,7 @@
       inlet:
         !type:PipeNode
         nodeGroupID: Pipe
-        pipeDirection: West
+        pipeDirection: South
   - type: DataFarm
     inletName: inlet
     outletName: outlet
