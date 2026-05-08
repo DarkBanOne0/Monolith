@@ -1,5 +1,6 @@
 using Content.Shared.Atmos;
 using Content.Shared._Exodus.Research.Visuals;
+using Robust.Shared.Audio;
 
 namespace Content.Server._Exodus.Research.Components;
 
@@ -16,7 +17,7 @@ public sealed partial class DataFarmComponent : Component
     public TimeSpan DestroyTimer = TimeSpan.FromSeconds(120f);
 
     [DataField]
-    public TimeSpan CycleAccumulator = TimeSpan.FromSeconds(0f);
+    public TimeSpan CycleAccumulator = TimeSpan.Zero;
 
     [DataField]
     public TimeSpan CycleDuration = TimeSpan.FromSeconds(1f);
@@ -55,5 +56,19 @@ public sealed partial class DataFarmComponent : Component
     public TimeSpan StartupAccumulator = TimeSpan.Zero;
 
     [DataField]
-    public TimeSpan ProcessDuration = TimeSpan.FromSeconds(0.9);
+    public TimeSpan ProcessAnimationDuration = TimeSpan.FromSeconds(0.9f);
+    [DataField]
+    public TimeSpan OnnSoundDuration = TimeSpan.FromSeconds(3f);
+
+    [DataField, AutoNetworkedField]
+    public SoundSpecifier? NormalSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/normal.ogg");
+
+    [DataField, AutoNetworkedField]
+    public SoundSpecifier? OnnSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/onn.ogg");
+
+    [DataField, AutoNetworkedField]
+    public SoundSpecifier? NoGoodSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/nogood.ogg");
+
+    [DataField, AutoNetworkedField]
+    public SoundSpecifier? ErrorSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/error.ogg");
 }

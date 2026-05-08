@@ -10,10 +10,12 @@ using Content.Server.NodeContainer.Nodes;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Research.Components;
 using Content.Shared._Exodus.Research.Visuals;
+using Content.Shared.Audio;
 using Content.Shared.Atmos;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Audio;
 using System.Linq;
 
 namespace Content.Server._Exodus.Research.Systems;
@@ -26,6 +28,7 @@ public sealed class DataFarmSystem : EntitySystem
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+    [Dependency] private readonly SharedAmbientSoundSystem _ambient = default!;
 
 
     public override void Initialize()
@@ -72,6 +75,7 @@ public sealed class DataFarmSystem : EntitySystem
             !_nodeContainer.TryGetNode(uid, comp.InletName, out PipeNode? inlet))
         {
             SetEnabled((uid, comp), false);
+            SetSound((uid, comp), DataFarmState.Off);
             SetState((uid, comp), DataFarmState.Off);
 
             return;
@@ -87,6 +91,7 @@ public sealed class DataFarmSystem : EntitySystem
             comp.StartupInProgress = false;
 
             SetEnabled((uid, comp), false);
+            SetSound((uid, comp), DataFarmState.Off);
             SetState((uid, comp), DataFarmState.Off);
 
             return;
@@ -96,10 +101,12 @@ public sealed class DataFarmSystem : EntitySystem
         {
             comp.StartupAccumulator += TimeSpan.FromSeconds(args.dt);
 
-            if (comp.StartupAccumulator < comp.ProcessDuration)
+            if (comp.StartupAccumulator <= comp.OnnSoundDuration)
             {
                 SetEnabled((uid, comp), false);
+                SetSound((uid, comp), DataFarmState.Proces);
                 SetState((uid, comp), DataFarmState.Proces);
+
                 return;
             }
 
@@ -107,10 +114,13 @@ public sealed class DataFarmSystem : EntitySystem
             comp.StartupAccumulator = TimeSpan.Zero;
         }
 
-        if (!comp.Enabled && comp.CurrentState == DataFarmState.Off)
+        if (comp.CurrentState == DataFarmState.Off)
         {
             comp.StartupInProgress = true;
+
+            SetSound((uid, comp), DataFarmState.Proces);
             SetState((uid, comp), DataFarmState.Proces);
+
             return;
         }
 
@@ -121,7 +131,9 @@ public sealed class DataFarmSystem : EntitySystem
             || inlet.Air.TotalMoles < takeNow)
         {
             SetEnabled((uid, comp), false);
+            SetSound((uid, comp), DataFarmState.NotGood);
             SetState((uid, comp), DataFarmState.NotGood);
+
             return;
         }
 
@@ -137,11 +149,13 @@ public sealed class DataFarmSystem : EntitySystem
 
         if (env.Temperature > comp.MaxTemp)
         {
+            SetSound((uid, comp), DataFarmState.Destract);
             SetState((uid, comp), DataFarmState.Destract);
             ApplyDamage((uid, comp));
         }
         else
         {
+            SetSound((uid, comp), DataFarmState.Normal);
             SetState((uid, comp), DataFarmState.Normal);
         }
 
@@ -184,5 +198,28 @@ public sealed class DataFarmSystem : EntitySystem
 
         if (TryComp<AppearanceComponent>(ent.Owner, out var appearance))
             _appearance.SetData(ent.Owner, DataFarmVisuals.State, state, appearance);
+    }
+
+    private void SetSound(Entity<DataFarmComponent> ent, DataFarmState state)
+    {
+        if (state == ent.Comp.CurrentState)
+            return;
+
+        if (!HasComp<AmbientSoundComponent>(ent.Owner))
+            AddComp<AmbientSoundComponent>(ent.Owner);
+
+        SoundSpecifier? sound = state switch
+        {
+            DataFarmState.Off => null,
+            DataFarmState.Proces => ent.Comp.OnnSound,
+            DataFarmState.Normal => ent.Comp.NormalSound,
+            DataFarmState.NotGood => ent.Comp.NoGoodSound,
+            DataFarmState.Destract => ent.Comp.ErrorSound
+        };
+
+        if (sound == null)
+            return;
+
+        _ambient.SetSound(ent.Owner, sound);
     }
 }

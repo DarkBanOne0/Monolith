@@ -24,11 +24,6 @@
           False: {visible: false}
   - type: ApcPowerReceiver
     powerLoad: 40000
-  - type: AmbientSound
-    volume: -9
-    range: 5
-    sound:
-      path: /Audio/Ambience/Objects/server_fans.ogg
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: StructuralMetallic
@@ -72,13 +67,17 @@
   - type: Sprite
     sprite: _Exodus/Structures/Machines/datafarm_research.rsi
     layers:
-    - state: icon
-    - state: pipe
+    - sprite: Structures/Piping/Atmospherics/pipe.rsi
+      state: pipeStraight
+      map: [ "enum.PipeVisualLayers.Pipe" ]
+      offset: 0, -0.2
     - map: ["enum.DataFarmVisualLayers.State"]
       state: DatafarmResearch-off
+      offset: 0, 0.1
     - map: ["enum.DataFarmVisualLayers.Light"]
       state: null
       shader: unshaded
+      offset: 0, 0.1
   - type: Appearance
   - type: GenericVisualizer
     visuals:
@@ -90,7 +89,6 @@
           NotGood: { state: DatafarmResearch-on-notgood }
           Destract: { state: DatafarmResearch-on-destract }
         enum.DataFarmVisualLayers.Light:
-#          Off: { state: DatafarmResearch-off-light }
           Proces: { state: DatafarmResearch-on-proces-light }
           Normal: { state: DatafarmResearch-on-normal-light }
           NotGood: { state: DatafarmResearch-on-notgood-light }
