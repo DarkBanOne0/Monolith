@@ -1,4 +1,3 @@
-using Content.Server._Exodus.Research.Components;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Atmos.Piping.Components;
 using Content.Server.Destructible;
@@ -10,6 +9,7 @@ using Content.Server.NodeContainer.Nodes;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Research.Components;
 using Content.Shared._Exodus.Research.Visuals;
+using Content.Shared._Exodus.Research.Components;
 using Content.Shared.Audio;
 using Content.Shared.Atmos;
 using Content.Shared.Damage;
@@ -189,17 +189,6 @@ public sealed class DataFarmSystem : EntitySystem
         _damageable.TryChangeDamage(ent.Owner, damage, ignoreResistances: true, interruptsDoAfters: false);
     }
 
-    private void SetState(Entity<DataFarmComponent> ent, DataFarmState state)
-    {
-        if (ent.Comp.CurrentState == state)
-            return;
-
-        ent.Comp.CurrentState = state;
-
-        if (TryComp<AppearanceComponent>(ent.Owner, out var appearance))
-            _appearance.SetData(ent.Owner, DataFarmVisuals.State, state, appearance);
-    }
-
     private void SetSound(Entity<DataFarmComponent> ent, DataFarmState state)
     {
         if (state == ent.Comp.CurrentState)
@@ -221,5 +210,16 @@ public sealed class DataFarmSystem : EntitySystem
             return;
 
         _ambient.SetSound(ent.Owner, sound);
+    }
+
+    public void SetState(Entity<DataFarmComponent> ent, DataFarmState state)
+    {
+        if (ent.Comp.CurrentState == state)
+            return;
+
+        ent.Comp.CurrentState = state;
+
+        if (TryComp<AppearanceComponent>(ent.Owner, out var appearance))
+            _appearance.SetData(ent.Owner, DataFarmVisuals.State, state, appearance);
     }
 }
