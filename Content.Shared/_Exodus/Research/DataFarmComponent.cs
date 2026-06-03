@@ -38,7 +38,7 @@ public sealed partial class DataFarmComponent : Component
     public float MinPressure = 20f;
 
     [DataField, AutoNetworkedField]
-    public float IntakePerSecond= 50f;
+    public float IntakePerSecond = 50f;
 
     [DataField, AutoNetworkedField]
     public string InletName = "inlet";
@@ -56,7 +56,7 @@ public sealed partial class DataFarmComponent : Component
     public TimeSpan StartupAccumulator = TimeSpan.Zero;
 
     [DataField, AutoNetworkedField]
-    public TimeSpan OnnSoundDuration = TimeSpan.FromSeconds(3f);
+    public TimeSpan StartupDuration = TimeSpan.FromSeconds(3f);
 
     [DataField, AutoNetworkedField]
     public SoundSpecifier? NormalSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/normal.ogg");
@@ -69,11 +69,4 @@ public sealed partial class DataFarmComponent : Component
 
     [DataField, AutoNetworkedField]
     public SoundSpecifier? ErrorSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/error.ogg");
-
-
-    [DataField]
-    public string MachineLayer = "enum.DataFarmVisualLayers.State";
-
-    [DataField]
-    public string LightLayer = "enum.DataFarmVisualLayers.Light";
 }

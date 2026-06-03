@@ -101,7 +101,7 @@ public sealed class DataFarmSystem : EntitySystem
         {
             comp.StartupAccumulator += TimeSpan.FromSeconds(args.dt);
 
-            if (comp.StartupAccumulator <= comp.OnnSoundDuration)
+            if (comp.StartupAccumulator <= comp.StartupDuration)
             {
                 SetEnabled((uid, comp), false);
                 SetSound((uid, comp), DataFarmState.Proces);
@@ -203,7 +203,8 @@ public sealed class DataFarmSystem : EntitySystem
             DataFarmState.Proces => ent.Comp.OnnSound,
             DataFarmState.Normal => ent.Comp.NormalSound,
             DataFarmState.NotGood => ent.Comp.NoGoodSound,
-            DataFarmState.Destract => ent.Comp.ErrorSound
+            DataFarmState.Destract => ent.Comp.ErrorSound,
+            _ => null
         };
 
         if (sound == null)
