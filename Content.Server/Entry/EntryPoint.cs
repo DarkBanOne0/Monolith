@@ -1,4 +1,6 @@
 using Content.Server._Exodus.Adminbus.WebAPI; // Exodus-WebAPI
+using Content.Server._Exodus.GuideGenerator; // Exodus
+using Content.Server._Mono.Company; // Mono
 using Content.Server._NF.Auth;
 using Content.Server.Acz;
 using Content.Server.Administration;
@@ -84,6 +86,7 @@ namespace Content.Server.Entry
             factory.RegisterIgnore(IgnoredComponents.List);
 
             prototypes.RegisterIgnore("parallax");
+            prototypes.RegisterIgnore("spriteFont"); // Exodus Calculator
 
             ServerContentIoC.Register();
 
@@ -154,12 +157,21 @@ namespace Content.Server.Entry
             if (!string.IsNullOrEmpty(dest))
             {
                 var resPath = new ResPath(dest).ToRootedPath();
-                var file = resourceManager.UserData.OpenWriteText(resPath.WithName("chem_" + dest));
-                ChemistryJsonGenerator.PublishJson(file);
+                // Exodus-Begin
+                // They're kinda broken and wasn't updated for years because nobody was using them
+                // so they're commented out for vessels data generation
+
+                // var file = resourceManager.UserData.OpenWriteText(resPath.WithName("chem_" + dest));
+                // ChemistryJsonGenerator.PublishJson(file);
+                // file.Flush();
+                // file = resourceManager.UserData.OpenWriteText(resPath.WithName("react_" + dest));
+                // ReactionJsonGenerator.PublishJson(file);
+                // file.Flush();
+
+                var file = resourceManager.UserData.OpenWriteText(resPath.WithName("vessels_" + dest));
+                VesselsJsonGenerator.PublishJson(file);
                 file.Flush();
-                file = resourceManager.UserData.OpenWriteText(resPath.WithName("react_" + dest));
-                ReactionJsonGenerator.PublishJson(file);
-                file.Flush();
+                // Exodus-End
                 IoCManager.Resolve<IBaseServer>().Shutdown("Data generation done");
             }
             else
@@ -174,6 +186,7 @@ namespace Content.Server.Entry
 
                 _euiManager.Initialize();
 
+                IoCManager.Resolve<CompanyManager>().Initialize(); // Mono
                 IoCManager.Resolve<IGameMapManager>().Initialize();
                 IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<GameTicker>().PostInitialize();
                 IoCManager.Resolve<IBanManager>().Initialize();
