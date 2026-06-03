@@ -1,3 +1,6 @@
+// (c) Space Exodus Team - EXDS-RL
+// Authors: DarkBanOne
+
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Atmos.Piping.Components;
 using Content.Server.Destructible;

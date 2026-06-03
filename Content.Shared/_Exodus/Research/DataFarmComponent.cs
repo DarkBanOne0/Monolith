@@ -1,3 +1,6 @@
+// (c) Space Exodus Team - EXDS-RL
+// Authors: DarkBanOne
+
 using Content.Shared.Atmos;
 using Content.Shared._Exodus.Research.Visuals;
 using Robust.Shared.Audio;

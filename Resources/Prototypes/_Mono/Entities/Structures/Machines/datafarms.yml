@@ -59,6 +59,7 @@
           collection: MetalBreak
   - type: Anchorable
 
+# Exodus - DataFarmRefactor - Start
 - type: entity
   id: BaseDataFarmResearch
   parent: BaseDataFarm
@@ -149,34 +150,35 @@
   - type: Machine
     board: DataFarmResearchCircuitboard
 
-- type: entity
-  id: DatafarmCrypto
-  parent: [BaseDataFarm, ConstructibleMachine]
-  name: data farm (Crypto)
-  description: A power-hungry server dedicated towards scraping data from... somewhere. This one generates valuable but random cryptocurrency at a rate of one every 10 minutes.
-  components:
-  - type: Sprite
-    sprite: _Mono/Structures/Machines/neapolitan_server.rsi
-    layers:
-    - state: icon
-    - state: unlit
-      shader: unshaded
-      map: [ "enum.PowerDeviceVisualLayers.Powered" ]
-    - state: stripe
-      color: "#b3aa79"
-    - state: stripe2
-      color: "#009360"
-  - type: ApcPowerReceiver
-    powerLoad: 40000
-  - type: PointLight
-    radius: 1.1
-    energy: 1.1
-    color: "#009360"
-  - type: ItemMiner
-    proto: SpawnLootDatafarmBitcoin
-    interval: 6
-    spawnChance: 0.01 # highly random like real cryptomining
-    minedSound: /Audio/Effects/Cargo/ping.ogg
-    needApcPower: true
-  - type: Machine
-    board: DataFarmCryptoCircuitboard
+#- type: entity
+#  id: DatafarmCrypto
+#  parent: [BaseDataFarm, ConstructibleMachine]
+#  name: data farm (Crypto)
+#  description: A power-hungry server dedicated towards scraping data from... somewhere. This one generates valuable but random cryptocurrency at a rate of one every 10 minutes.
+#  components:
+#  - type: Sprite
+#    sprite: _Mono/Structures/Machines/neapolitan_server.rsi
+#    layers:
+#    - state: icon
+#    - state: unlit
+#      shader: unshaded
+#      map: [ "enum.PowerDeviceVisualLayers.Powered" ]
+#    - state: stripe
+#      color: "#b3aa79"
+#    - state: stripe2
+#      color: "#009360"
+#  - type: ApcPowerReceiver
+#    powerLoad: 40000
+#  - type: PointLight
+#    radius: 1.1
+#    energy: 1.1
+#    color: "#009360"
+#  - type: ItemMiner
+#    proto: SpawnLootDatafarmBitcoin
+#    interval: 6
+#    spawnChance: 0.01 # highly random like real cryptomining
+#    minedSound: /Audio/Effects/Cargo/ping.ogg
+#    needApcPower: true
+#  - type: Machine
+#    board: DataFarmCryptoCircuitboard
+#Exodus - DataFarmRefactor - End
