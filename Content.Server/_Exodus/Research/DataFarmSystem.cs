@@ -33,7 +33,6 @@ public sealed class DataFarmSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedAmbientSoundSystem _ambient = default!;
 
-
     public override void Initialize()
     {
         base.Initialize();
@@ -167,7 +166,7 @@ public sealed class DataFarmSystem : EntitySystem
         _atmos.AddHeat(comp.Buffer, dQ);
 
         _atmos.Merge(env, comp.Buffer);
-        comp.Buffer = new GasMixture();
+        comp.Buffer.Clear();
         comp.CycleAccumulator = TimeSpan.Zero;
     }
 
@@ -210,10 +209,10 @@ public sealed class DataFarmSystem : EntitySystem
             _ => null
         };
 
-        if (sound == null)
-            return;
+        _ambient.SetAmbience(ent.Owner, sound != null);
 
-        _ambient.SetSound(ent.Owner, sound);
+        if (sound != null)
+            _ambient.SetSound(ent.Owner, sound);
     }
 
     public void SetState(Entity<DataFarmComponent> ent, DataFarmState state)

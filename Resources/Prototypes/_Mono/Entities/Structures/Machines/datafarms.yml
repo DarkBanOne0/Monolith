@@ -110,7 +110,7 @@
     guides:
     - Science
   - type: ResearchPointSource
-    pointsPerSecond: 20
+    pointsPerSecond: 25
     active: true
   - type: AtmosDevice
   - type: NodeContainer
@@ -121,9 +121,8 @@
         pipeDirection: South
   - type: DataFarm
     inletName: inlet
-    outletName: outlet
     cycleDuration: 1.0
-    intakePerTick: 1.0
+    intakePerSecond: 10.0
 
 - type: entity
   id: DatafarmResearchFaction

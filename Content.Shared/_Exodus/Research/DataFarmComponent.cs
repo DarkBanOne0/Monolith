@@ -10,55 +10,55 @@ namespace Content.Shared._Exodus.Research.Components;
 [RegisterComponent, AutoGenerateComponentState]
 public sealed partial class DataFarmComponent : Component
 {
-    [DataField, AutoNetworkedField]
+    [DataField]
     public GasMixture Buffer = new();
 
     [DataField, AutoNetworkedField]
     public DataFarmState CurrentState = DataFarmState.Off;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public TimeSpan DestroyTimer = TimeSpan.FromSeconds(120f);
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public TimeSpan CycleAccumulator = TimeSpan.Zero;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public TimeSpan CycleDuration = TimeSpan.FromSeconds(1f);
 
-    [DataField, AutoNetworkedField]
-    public float DeltaT = 30f;
+    [DataField]
+    public float DeltaT = 35f;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public float MinTemp = 268.15f;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public float MaxTemp = 323.15f;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public float MinMolesOnTile = 5f;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public float MinPressure = 20f;
 
-    [DataField, AutoNetworkedField]
-    public float IntakePerSecond = 50f;
+    [DataField]
+    public float IntakePerSecond = 10f;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public string InletName = "inlet";
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public bool Enabled = true;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public float DamagePerSecond;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public bool StartupInProgress;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public TimeSpan StartupAccumulator = TimeSpan.Zero;
 
-    [DataField, AutoNetworkedField]
+    [DataField]
     public TimeSpan StartupDuration = TimeSpan.FromSeconds(3f);
 
     [DataField, AutoNetworkedField]
