@@ -14,7 +14,6 @@ using Content.Server.Research.Components;
 using Content.Shared._Exodus.Research.Visuals;
 using Content.Shared._Exodus.Research.Components;
 using Content.Shared.Audio;
-using Content.Shared.Atmos;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Robust.Shared.Prototypes;
@@ -41,9 +40,9 @@ public sealed class DataFarmSystem : EntitySystem
         SubscribeLocalEvent<DataFarmComponent, ComponentStartup>(OnStartup);
     }
 
-    private void OnStartup(EntityUid uid, DataFarmComponent comp, ComponentStartup args)
+    private void OnStartup(Entity<DataFarmComponent> ent, ref ComponentStartup args)
     {
-        if (!TryComp<DestructibleComponent>(uid, out var destrComp))
+        if (!TryComp<DestructibleComponent>(ent.Owner, out var destrComp))
             return;
 
         int? destructionThreshold = null;
@@ -65,109 +64,109 @@ public sealed class DataFarmSystem : EntitySystem
                 : Math.Min(destructionThreshold.Value, dmgTrigger.Damage);
         }
 
-        if (destructionThreshold is null || comp.DestroyTimer.TotalSeconds <= 0)
+        if (destructionThreshold is null || ent.Comp.DestroyTimer.TotalSeconds <= 0)
             return;
 
-        comp.DamagePerSecond = (float)(destructionThreshold.Value / comp.DestroyTimer.TotalSeconds);
+        ent.Comp.DamagePerSecond = (float)(destructionThreshold.Value / ent.Comp.DestroyTimer.TotalSeconds);
     }
 
-    private void OnAtmosUpdate(EntityUid uid, DataFarmComponent comp, ref AtmosDeviceUpdateEvent args)
+    private void OnAtmosUpdate(Entity<DataFarmComponent> ent, ref AtmosDeviceUpdateEvent args)
     {
-        if (comp.IntakePerSecond <= 0f ||
-            !_nodeContainer.TryGetNode(uid, comp.InletName, out PipeNode? inlet))
+        if (ent.Comp.IntakePerSecond <= 0f ||
+            !_nodeContainer.TryGetNode(ent.Owner, ent.Comp.InletName, out PipeNode? inlet))
         {
-            SetEnabled((uid, comp), false);
-            SetSound((uid, comp), DataFarmState.Off);
-            SetState((uid, comp), DataFarmState.Off);
+            SetEnabled((ent.Owner, ent.Comp), false);
+            SetSound((ent.Owner, ent.Comp), DataFarmState.Off);
+            SetState((ent.Owner, ent.Comp), DataFarmState.Off);
 
             return;
         }
 
-        var env = _atmos.GetContainingMixture(uid, ignoreExposed: true, excite: true);
-        var powered = _power.IsPowered(uid);
-        var takeNow = comp.IntakePerSecond * args.dt;
+        var env = _atmos.GetContainingMixture(ent.Owner, ignoreExposed: true, excite: true);
+        var powered = _power.IsPowered(ent.Owner);
+        var takeNow = ent.Comp.IntakePerSecond * args.dt;
 
         if (!powered)
         {
-            comp.StartupAccumulator = TimeSpan.Zero;
-            comp.StartupInProgress = false;
+            ent.Comp.StartupAccumulator = TimeSpan.Zero;
+            ent.Comp.StartupInProgress = false;
 
-            SetEnabled((uid, comp), false);
-            SetSound((uid, comp), DataFarmState.Off);
-            SetState((uid, comp), DataFarmState.Off);
+            SetEnabled((ent.Owner, ent.Comp), false);
+            SetSound((ent.Owner, ent.Comp), DataFarmState.Off);
+            SetState((ent.Owner, ent.Comp), DataFarmState.Off);
 
             return;
         }
 
-        if (comp.StartupInProgress)
+        if (ent.Comp.StartupInProgress)
         {
-            comp.StartupAccumulator += TimeSpan.FromSeconds(args.dt);
+            ent.Comp.StartupAccumulator += TimeSpan.FromSeconds(args.dt);
 
-            if (comp.StartupAccumulator <= comp.StartupDuration)
+            if (ent.Comp.StartupAccumulator <= ent.Comp.StartupDuration)
             {
-                SetEnabled((uid, comp), false);
-                SetSound((uid, comp), DataFarmState.Proces);
-                SetState((uid, comp), DataFarmState.Proces);
+                SetEnabled((ent.Owner, ent.Comp), false);
+                SetSound((ent.Owner, ent.Comp), DataFarmState.Proces);
+                SetState((ent.Owner, ent.Comp), DataFarmState.Proces);
 
                 return;
             }
 
-            comp.StartupInProgress = false;
-            comp.StartupAccumulator = TimeSpan.Zero;
+            ent.Comp.StartupInProgress = false;
+            ent.Comp.StartupAccumulator = TimeSpan.Zero;
         }
 
-        if (comp.CurrentState == DataFarmState.Off)
+        if (ent.Comp.CurrentState == DataFarmState.Off)
         {
-            comp.StartupInProgress = true;
+            ent.Comp.StartupInProgress = true;
 
-            SetSound((uid, comp), DataFarmState.Proces);
-            SetState((uid, comp), DataFarmState.Proces);
+            SetSound((ent.Owner, ent.Comp), DataFarmState.Proces);
+            SetState((ent.Owner, ent.Comp), DataFarmState.Proces);
 
             return;
         }
 
         if (env == null
-            || env.Temperature < comp.MinTemp
-            || env.TotalMoles < comp.MinMolesOnTile
-            || env.Pressure < comp.MinPressure
+            || env.Temperature < ent.Comp.MinTemp
+            || env.TotalMoles < ent.Comp.MinMolesOnTile
+            || env.Pressure < ent.Comp.MinPressure
             || inlet.Air.TotalMoles < takeNow)
         {
-            SetEnabled((uid, comp), false);
-            SetSound((uid, comp), DataFarmState.NotGood);
-            SetState((uid, comp), DataFarmState.NotGood);
+            SetEnabled((ent.Owner, ent.Comp), false);
+            SetSound((ent.Owner, ent.Comp), DataFarmState.NotGood);
+            SetState((ent.Owner, ent.Comp), DataFarmState.NotGood);
 
             return;
         }
 
-        SetEnabled((uid, comp), true);
+        SetEnabled((ent.Owner, ent.Comp), true);
 
         var removed = inlet.Air.Remove(takeNow);
-        _atmos.Merge(comp.Buffer, removed);
+        _atmos.Merge(ent.Comp.Buffer, removed);
 
-        comp.CycleAccumulator += TimeSpan.FromSeconds(args.dt);
+        ent.Comp.CycleAccumulator += TimeSpan.FromSeconds(args.dt);
 
-        if (comp.CycleAccumulator < comp.CycleDuration || comp.Buffer.TotalMoles <= 0f || !comp.Enabled)
+        if (ent.Comp.CycleAccumulator < ent.Comp.CycleDuration || ent.Comp.Buffer.TotalMoles <= 0f || !ent.Comp.Enabled)
             return;
 
-        if (env.Temperature > comp.MaxTemp)
+        if (env.Temperature > ent.Comp.MaxTemp)
         {
-            SetSound((uid, comp), DataFarmState.Destract);
-            SetState((uid, comp), DataFarmState.Destract);
-            ApplyDamage((uid, comp));
+            SetSound((ent.Owner, ent.Comp), DataFarmState.Destract);
+            SetState((ent.Owner, ent.Comp), DataFarmState.Destract);
+            ApplyDamage((ent.Owner, ent.Comp));
         }
         else
         {
-            SetSound((uid, comp), DataFarmState.Normal);
-            SetState((uid, comp), DataFarmState.Normal);
+            SetSound((ent.Owner, ent.Comp), DataFarmState.Normal);
+            SetState((ent.Owner, ent.Comp), DataFarmState.Normal);
         }
 
-        var c = _atmos.GetHeatCapacity(comp.Buffer, applyScaling: true);
-        var dQ = c * comp.DeltaT;
-        _atmos.AddHeat(comp.Buffer, dQ);
+        var c = _atmos.GetHeatCapacity(ent.Comp.Buffer, applyScaling: true);
+        var dQ = c * ent.Comp.DeltaT;
+        _atmos.AddHeat(ent.Comp.Buffer, dQ);
 
-        _atmos.Merge(env, comp.Buffer);
-        comp.Buffer.Clear();
-        comp.CycleAccumulator = TimeSpan.Zero;
+        _atmos.Merge(env, ent.Comp.Buffer);
+        ent.Comp.Buffer.Clear();
+        ent.Comp.CycleAccumulator = TimeSpan.Zero;
     }
 
     public void SetEnabled(Entity<DataFarmComponent> ent, bool value)
