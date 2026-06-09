@@ -189,7 +189,7 @@ public sealed class DataFarmSystem : EntitySystem
             return;
 
         var heatType = _prototypeManager.Index<DamageTypePrototype>("Heat");
-        var damage = new DamageSpecifier(heatType, ent.Comp.DamagePerSecond);
+        var damage = new DamageSpecifier(heatType, damagePerSecond);
 
         _damageable.TryChangeDamage(ent.Owner, damage, ignoreResistances: true, interruptsDoAfters: false);
     }

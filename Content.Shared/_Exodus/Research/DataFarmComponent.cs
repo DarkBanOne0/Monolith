@@ -50,9 +50,6 @@ public sealed partial class DataFarmComponent : Component
     public bool Enabled = true;
 
     [DataField]
-    public float DamagePerSecond;
-
-    [DataField]
     public bool StartupInProgress;
 
     [DataField]
