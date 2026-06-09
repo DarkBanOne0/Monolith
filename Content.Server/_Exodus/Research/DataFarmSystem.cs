@@ -37,13 +37,12 @@ public sealed class DataFarmSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<DataFarmComponent, AtmosDeviceUpdateEvent>(OnAtmosUpdate);
-        SubscribeLocalEvent<DataFarmComponent, ComponentStartup>(OnStartup);
     }
 
-    private void OnStartup(Entity<DataFarmComponent> ent, ref ComponentStartup args)
+    private float GetDamagePerSecond(Entity<DataFarmComponent> ent)
     {
         if (!TryComp<DestructibleComponent>(ent.Owner, out var destrComp))
-            return;
+            return 0f;
 
         int? destructionThreshold = null;
 
@@ -65,9 +64,9 @@ public sealed class DataFarmSystem : EntitySystem
         }
 
         if (destructionThreshold is null || ent.Comp.DestroyTimer.TotalSeconds <= 0)
-            return;
+            return 0f;
 
-        ent.Comp.DamagePerSecond = (float)(destructionThreshold.Value / ent.Comp.DestroyTimer.TotalSeconds);
+        return (float)(destructionThreshold.Value / ent.Comp.DestroyTimer.TotalSeconds);
     }
 
     private void OnAtmosUpdate(Entity<DataFarmComponent> ent, ref AtmosDeviceUpdateEvent args)
@@ -184,6 +183,11 @@ public sealed class DataFarmSystem : EntitySystem
 
     public void ApplyDamage(Entity<DataFarmComponent> ent)
     {
+        var damagePerSecond = GetDamagePerSecond(ent);
+
+        if (damagePerSecond <= 0f)
+            return;
+
         var heatType = _prototypeManager.Index<DamageTypePrototype>("Heat");
         var damage = new DamageSpecifier(heatType, ent.Comp.DamagePerSecond);
 
