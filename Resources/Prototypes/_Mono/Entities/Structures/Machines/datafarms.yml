@@ -123,6 +123,7 @@
     inletName: inlet
     cycleDuration: 1.0
     intakePerSecond: 10.0
+    damagePerSecond: 0
 
 - type: entity
   id: DatafarmResearchFaction
