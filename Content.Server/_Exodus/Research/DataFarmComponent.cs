@@ -3,9 +3,10 @@
 
 using Content.Shared.Atmos;
 using Content.Shared._Exodus.Research.Visuals;
+using Content.Shared.Damage.Prototypes;
 using Robust.Shared.Audio;
 
-namespace Content.Shared._Exodus.Research.Components;
+namespace Content.Server._Exodus.Research.Components;
 
 [RegisterComponent, AutoGenerateComponentState]
 public sealed partial class DataFarmComponent : Component
@@ -20,10 +21,19 @@ public sealed partial class DataFarmComponent : Component
     public TimeSpan DestroyTimer = TimeSpan.FromSeconds(120f);
 
     [DataField]
-    public TimeSpan CycleAccumulator = TimeSpan.Zero;
+    public TimeSpan CycleDuration = TimeSpan.FromSeconds(1f);
 
     [DataField]
-    public TimeSpan CycleDuration = TimeSpan.FromSeconds(1f);
+    public TimeSpan? NextAt;
+
+    [DataField]
+    public TimeSpan? NextDamageAt;
+
+    [DataField]
+    public bool Powered = false;
+
+    [DataField]
+    public string DamageType = "Heat";
 
     [DataField]
     public float DeltaT = 35f;
@@ -50,22 +60,16 @@ public sealed partial class DataFarmComponent : Component
     public bool Enabled = true;
 
     [DataField]
-    public bool StartupInProgress;
-
-    [DataField]
-    public TimeSpan StartupAccumulator = TimeSpan.Zero;
-
-    [DataField]
     public TimeSpan StartupDuration = TimeSpan.FromSeconds(3f);
 
     [DataField, AutoNetworkedField]
     public SoundSpecifier? NormalSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/normal.ogg");
 
     [DataField, AutoNetworkedField]
-    public SoundSpecifier? OnnSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/onn.ogg");
+    public SoundSpecifier? ProcessSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/onn.ogg");
 
     [DataField, AutoNetworkedField]
-    public SoundSpecifier? NoGoodSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/nogood.ogg");
+    public SoundSpecifier? WarningSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/nogood.ogg");
 
     [DataField, AutoNetworkedField]
     public SoundSpecifier? ErrorSound = new SoundPathSpecifier("/Audio/_Exodus/Machines/DataMinerResearch/error.ogg");

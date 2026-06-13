@@ -85,15 +85,15 @@
       enum.DataFarmVisuals.State:
         enum.DataFarmVisualLayers.State:
           Off: { state: DatafarmResearch-off }
-          Proces: { state: DatafarmResearch-on-proces }
+          Process: { state: DatafarmResearch-on-proces }
           Normal: { state: DatafarmResearch-on-normal }
-          NotGood: { state: DatafarmResearch-on-notgood }
-          Destract: { state: DatafarmResearch-on-destract }
+          Warning: { state: DatafarmResearch-on-notgood }
+          Destruct: { state: DatafarmResearch-on-destract }
         enum.DataFarmVisualLayers.Light:
-          Proces: { state: DatafarmResearch-on-proces-light }
+          Process: { state: DatafarmResearch-on-proces-light }
           Normal: { state: DatafarmResearch-on-normal-light }
-          NotGood: { state: DatafarmResearch-on-notgood-light }
-          Destract: { state: DatafarmResearch-on-destract-light }
+          Warning: { state: DatafarmResearch-on-notgood-light }
+          Destruct: { state: DatafarmResearch-on-destract-light }
   - type: ResearchClient
   - type: ActivatableUI
     key: enum.ResearchClientUiKey.Key

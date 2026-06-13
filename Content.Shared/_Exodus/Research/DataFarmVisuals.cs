@@ -23,8 +23,8 @@ public enum DataFarmVisualLayers : byte
 public enum DataFarmState : byte
 {
     Off,
-    Proces,
+    Process,
     Normal,
-    NotGood,
-    Destract
+    Warning,
+    Destruct
 }
