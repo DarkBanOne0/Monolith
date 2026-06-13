@@ -5,6 +5,7 @@ using Content.Shared.Atmos;
 using Content.Shared._Exodus.Research.Visuals;
 using Content.Shared.Damage.Prototypes;
 using Robust.Shared.Audio;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Exodus.Research.Components;
 
@@ -33,7 +34,7 @@ public sealed partial class DataFarmComponent : Component
     public bool Powered = false;
 
     [DataField]
-    public string DamageType = "Heat";
+    public ProtoId<DamageTypePrototype> DamageType = "Heat";
 
     [DataField]
     public float DeltaT = 35f;

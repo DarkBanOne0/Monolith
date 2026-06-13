@@ -156,8 +156,8 @@ public sealed class DataFarmSystem : EntitySystem
         if (damagePerSecond <= 0f)
             return;
 
-        var heatType = _prototypeManager.Index<DamageTypePrototype>(ent.Comp.DamageType);
-        var damage = new DamageSpecifier(heatType, damagePerSecond);
+        var damageType = _prototypeManager.Index(ent.Comp.DamageType);
+        var damage = new DamageSpecifier(damageType, damagePerSecond);
 
         _damageable.TryChangeDamage(ent.Owner, damage, ignoreResistances: true, interruptsDoAfters: false);
     }
