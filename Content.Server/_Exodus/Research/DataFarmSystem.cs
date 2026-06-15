@@ -26,14 +26,14 @@ namespace Content.Server._Exodus.Research.Systems;
 
 public sealed class DataFarmSystem : EntitySystem
 {
-    [Dependency] private readonly NodeContainerSystem _nodeContainer = default!;
-    [Dependency] private readonly AtmosphereSystem _atmos = default!;
-    [Dependency] private readonly PowerReceiverSystem _power = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly SharedAmbientSoundSystem _ambient = default!;
-    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private NodeContainerSystem _nodeContainer = default!;
+    [Dependency] private AtmosphereSystem _atmos = default!;
+    [Dependency] private PowerReceiverSystem _power = default!;
+    [Dependency] private DamageableSystem _damageable = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
+    [Dependency] private SharedAmbientSoundSystem _ambient = default!;
+    [Dependency] private IGameTiming _timing = default!;
 
     public override void Initialize()
     {
@@ -125,7 +125,6 @@ public sealed class DataFarmSystem : EntitySystem
         _atmos.Merge(env, ent.Comp.Buffer);
         ent.Comp.Buffer.Clear();
         ent.Comp.NextAt += ent.Comp.CycleDuration;
-        Log.Info($"UpdateTime for {ToPrettyString(ent.Owner)}: {ent.Comp.NextAt}");
     }
 
     private void OnPowerChanged(Entity<DataFarmComponent> ent, ref PowerChangedEvent args)
